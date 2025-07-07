@@ -134,5 +134,12 @@ export class StreamingService {
    */
   async validateStreamUrl(url) {
     return await this.streamProxyService.validateUrl(url);
-    }
+  }
+
+  /**
+   * Obtém tipos de URL suportados
+   */
+  getSupportedUrlTypes() {
+    return this.streamProxyService.getSupportedTypes();
+  }
 }
