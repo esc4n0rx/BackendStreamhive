@@ -1,10 +1,11 @@
- import express from 'express';
+import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import { config } from './config/environment.js';
 import { errorHandler } from './presentation/middlewares/error-handler.js';
 import authRoutes from './presentation/routes/auth-routes.js';
+import roomRoutes from './presentation/routes/room-routes.js';
 
 /**
  * Configuração principal da aplicação Express
@@ -37,6 +38,7 @@ app.get('/health', (req, res) => {
 
 // Rotas da API
 app.use('/api/v1/auth', authRoutes);
+app.use('/api/v1/rooms', roomRoutes);
 
 // Rota para endpoints não encontrados
 app.use('*', (req, res) => {
