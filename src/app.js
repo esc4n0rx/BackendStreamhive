@@ -6,6 +6,7 @@ import { config } from './config/environment.js';
 import { errorHandler } from './presentation/middlewares/error-handler.js';
 import authRoutes from './presentation/routes/auth-routes.js';
 import roomRoutes from './presentation/routes/room-routes.js';
+import streamingRoutes from './presentation/routes/streaming-routes.js';
 
 /**
  * Configuração principal da aplicação Express
@@ -13,9 +14,14 @@ import roomRoutes from './presentation/routes/room-routes.js';
 const app = express();
 
 // Middlewares de segurança
-app.use(helmet());
+app.use(helmet({
+  crossOriginEmbedderPolicy: false // Necessário para WebSocket
+}));
+
 app.use(cors({
-  origin: config.nodeEnv === 'production' ? ['https://yourdomain.com'] : true,
+  origin: config.nodeEnv === 'production' 
+    ? ['https://yourdomain.com'] 
+    : ['http://localhost:3000', 'http://127.0.0.1:3000'],
   credentials: true
 }));
 
@@ -32,13 +38,15 @@ app.get('/health', (req, res) => {
     success: true,
     message: 'Streamhive API está funcionando',
     timestamp: new Date().toISOString(),
-    environment: config.nodeEnv
+    environment: config.nodeEnv,
+    websocket: 'enabled'
   });
 });
 
 // Rotas da API
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/rooms', roomRoutes);
+app.use('/api/v1/streaming', streamingRoutes);
 
 // Rota para endpoints não encontrados
 app.use('*', (req, res) => {
